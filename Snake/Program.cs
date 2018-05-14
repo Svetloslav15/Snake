@@ -50,9 +50,7 @@ namespace Snake
 
             foreach (var obstacle in obstacles)
             {
-                Console.SetCursorPosition(obstacle.Col, obstacle.Row);
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write('X');
+                WriteSymbol(obstacle, 'X', "obstacle");
             }
 
             Position food = CreateApple(snakeElements, obstacles);
