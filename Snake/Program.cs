@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Snake
 {
-    struct Position
+    public struct Position
     {
         public int Row;
         public int Col;
@@ -111,11 +111,15 @@ namespace Snake
                     (obstacles.Contains(snakeNewHead)))
                 {
                     int finalTime = Environment.TickCount;
+                    int minutes = (int)(finalTime - (double)totalTime) / 1000 / 60;
+                    int sec = (int)(finalTime - (double)totalTime) / 1000 % 60;
+                    int milSec = (finalTime - totalTime) % 60;
                     Console.SetCursorPosition(0, 0);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Game over!");
                     Console.WriteLine($"Your points: {Math.Max(0, points)}");
-                    Console.WriteLine($"You time: {(int)(finalTime - (double)totalTime) / 1000 / 60:d2}:{(int)(finalTime - (double)totalTime) / 1000 % 60:d2}:{(finalTime - totalTime) % 60:d2}m");
+                    Console.WriteLine($"You time: {minutes:d2}:{sec:d2}:{milSec:d2}m");
+
                     return;
                 }
                 
@@ -137,15 +141,7 @@ namespace Snake
                     food = CreateApple(snakeElements, obstacles);
                     points += 10;
                     speed -= 5;
-                    Position obstacle = new Position();
-                    do
-                    {
-                        Random random = new Random();
-                        obstacle = new Position(random.Next(0, Console.WindowHeight), random.Next(0, Console.WindowWidth));
-
-                    }
-                    while (snakeElements.Contains(obstacle) || obstacles.Contains(obstacle));
-                    obstacles.Add(obstacle);
+                    Position obstacle = CreateObstacle(snakeElements, obstacles);
                     WriteSymbol(obstacle, 'X', "obstacle");
                 }
                 else
@@ -161,6 +157,8 @@ namespace Snake
                     Console.SetCursorPosition(food.Col, food.Row);
                     Console.Write(' ');
                     food = CreateApple(snakeElements, obstacles);
+                    Position obstacle = CreateObstacle(snakeElements, obstacles);
+                    WriteSymbol(obstacle, 'X', "obstacle");
                     startTime = Environment.TickCount;
                     speed -= 5;
                     points--;
@@ -182,12 +180,25 @@ namespace Snake
             return food;
         }
 
+        static Position CreateObstacle(Queue<Position> snakeElements, List<Position> obstacles)
+        {
+            Position obstacle = new Position();
+            do
+            {
+                Random random = new Random();
+                obstacle = new Position(random.Next(0, Console.WindowHeight), random.Next(0, Console.WindowWidth));
+            }
+            while (snakeElements.Contains(obstacle) || obstacles.Contains(obstacle));
+            obstacles.Add(obstacle);
+            return obstacle;
+        }
+
         static void WriteSymbol(Position position, char symbol, string type)
         {
             Console.SetCursorPosition(position.Col, position.Row);
             switch (type)
             {
-                case "food":Console.ForegroundColor = ConsoleColor.Blue;break;
+                case "food":Console.ForegroundColor = ConsoleColor.Cyan;break;
                 case "head":Console.ForegroundColor = ConsoleColor.DarkGray; break;
                 case "tail":Console.ForegroundColor = ConsoleColor.Gray;break;
                 case "obstacle":Console.ForegroundColor = ConsoleColor.Yellow;break;
