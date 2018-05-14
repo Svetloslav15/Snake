@@ -39,20 +39,14 @@ namespace Snake
             Console.BufferHeight = Console.WindowHeight;
             int startTime = Environment.TickCount;
 
-            List<Position> obstacles = new List<Position>()
+            List<Position> obstacles = new List<Position>();
+            Queue<Position> snakeElements = new Queue<Position>();
+
+            for (int number = 1; number <= 20; number++)
             {
-                new Position(23, 56),
-                new Position(12, 10),
-                new Position(23, 45),
-                new Position(10, 46),
-                new Position(24, 19),
-                new Position(12, 12),
-                new Position(11, 78),
-                new Position(5, 62),
-                new Position(23, 100),
-                new Position(8, 89),
-                new Position(6, 43),
-            };
+                Position obstacle = CreateObstacle(snakeElements, obstacles);
+                WriteSymbol(obstacle, 'X', "obstacle");
+            }
 
             foreach (var obstacle in obstacles)
             {
@@ -61,7 +55,6 @@ namespace Snake
                 Console.Write('X');
             }
 
-            Queue<Position> snakeElements = new Queue<Position>();
             Position food = CreateApple(snakeElements, obstacles);
 
             for (int i = 0; i <= 5; i++)
@@ -102,12 +95,13 @@ namespace Snake
                 Position nextDirection = directions[direction];
                 Position snakeNewHead = new Position(snakeHead.Row + nextDirection.Row, snakeHead.Col + nextDirection.Col);
 
+                if (snakeNewHead.Row < 0)  snakeNewHead.Row = Console.WindowHeight - 1;
+                if (snakeNewHead.Col < 0) snakeNewHead.Col = Console.WindowWidth - 1;
+                if (snakeNewHead.Col >= Console.WindowWidth) snakeNewHead.Col = 0;
+                if (snakeNewHead.Row >= Console.WindowHeight) snakeNewHead.Row = 0;
+
                 // check if you lose the game
-                if (snakeNewHead.Row < 0 ||
-                    snakeNewHead.Col < 0 ||
-                    snakeNewHead.Col >= Console.WindowWidth ||
-                    snakeNewHead.Row >= Console.WindowHeight ||
-                    snakeElements.Contains(snakeNewHead) ||
+                if (snakeElements.Contains(snakeNewHead) ||
                     (obstacles.Contains(snakeNewHead)))
                 {
                     int finalTime = Environment.TickCount;
@@ -140,7 +134,7 @@ namespace Snake
                 {
                     food = CreateApple(snakeElements, obstacles);
                     points += 10;
-                    speed -= 5;
+                    speed -= 3;
                     Position obstacle = CreateObstacle(snakeElements, obstacles);
                     WriteSymbol(obstacle, 'X', "obstacle");
                 }
