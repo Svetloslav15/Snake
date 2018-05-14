@@ -41,10 +41,11 @@ namespace Snake
 
             List<Position> obstacles = new List<Position>();
             Queue<Position> snakeElements = new Queue<Position>();
+            Position food = CreateApple(snakeElements, obstacles);
 
             for (int number = 1; number <= 20; number++)
             {
-                Position obstacle = CreateObstacle(snakeElements, obstacles);
+                Position obstacle = CreateObstacle(snakeElements, obstacles, food);
                 WriteSymbol(obstacle, 'X', "obstacle");
             }
 
@@ -53,7 +54,6 @@ namespace Snake
                 WriteSymbol(obstacle, 'X', "obstacle");
             }
 
-            Position food = CreateApple(snakeElements, obstacles);
 
             for (int i = 0; i <= 5; i++)
             {
@@ -93,7 +93,7 @@ namespace Snake
                 Position nextDirection = directions[direction];
                 Position snakeNewHead = new Position(snakeHead.Row + nextDirection.Row, snakeHead.Col + nextDirection.Col);
 
-                if (snakeNewHead.Row < 0)  snakeNewHead.Row = Console.WindowHeight - 1;
+                if (snakeNewHead.Row < 0) snakeNewHead.Row = Console.WindowHeight - 1;
                 if (snakeNewHead.Col < 0) snakeNewHead.Col = Console.WindowWidth - 1;
                 if (snakeNewHead.Col >= Console.WindowWidth) snakeNewHead.Col = 0;
                 if (snakeNewHead.Row >= Console.WindowHeight) snakeNewHead.Row = 0;
@@ -114,7 +114,7 @@ namespace Snake
 
                     return;
                 }
-                
+
                 // add head
                 snakeElements.Enqueue(snakeNewHead);
                 WriteSymbol(snakeHead, '*', "tail");
@@ -133,7 +133,7 @@ namespace Snake
                     food = CreateApple(snakeElements, obstacles);
                     points += 10;
                     speed -= 3;
-                    Position obstacle = CreateObstacle(snakeElements, obstacles);
+                    Position obstacle = CreateObstacle(snakeElements, obstacles, food);
                     WriteSymbol(obstacle, 'X', "obstacle");
                 }
                 else
@@ -142,14 +142,14 @@ namespace Snake
                     Console.SetCursorPosition(last.Col, last.Row);
                     Console.Write(' ');
                 }
-                
+
                 int currentTime = Environment.TickCount;
                 if (Math.Abs(currentTime - startTime) >= 15000)
                 {
                     Console.SetCursorPosition(food.Col, food.Row);
                     Console.Write(' ');
                     food = CreateApple(snakeElements, obstacles);
-                    Position obstacle = CreateObstacle(snakeElements, obstacles);
+                    Position obstacle = CreateObstacle(snakeElements, obstacles, food);
                     WriteSymbol(obstacle, 'X', "obstacle");
                     startTime = Environment.TickCount;
                     speed -= 5;
@@ -166,13 +166,13 @@ namespace Snake
             Position food = new Position();
             do
             {
-               food = new Position(random.Next(0, Console.WindowHeight), random.Next(0, Console.WindowWidth));
+                food = new Position(random.Next(0, Console.WindowHeight), random.Next(0, Console.WindowWidth));
             }
             while (snakeElements.Contains(food) || obstacles.Contains(food));
             return food;
         }
 
-        static Position CreateObstacle(Queue<Position> snakeElements, List<Position> obstacles)
+        static Position CreateObstacle(Queue<Position> snakeElements, List<Position> obstacles, Position food)
         {
             Position obstacle = new Position();
             do
@@ -180,7 +180,7 @@ namespace Snake
                 Random random = new Random();
                 obstacle = new Position(random.Next(0, Console.WindowHeight), random.Next(0, Console.WindowWidth));
             }
-            while (snakeElements.Contains(obstacle) || obstacles.Contains(obstacle));
+            while (snakeElements.Contains(obstacle) || obstacles.Contains(obstacle) || (food.Row == obstacle.Row && food.Col == obstacle.Col));
             obstacles.Add(obstacle);
             return obstacle;
         }
@@ -190,12 +190,12 @@ namespace Snake
             Console.SetCursorPosition(position.Col, position.Row);
             switch (type)
             {
-                case "food":Console.ForegroundColor = ConsoleColor.Cyan;break;
-                case "head":Console.ForegroundColor = ConsoleColor.DarkGray; break;
-                case "tail":Console.ForegroundColor = ConsoleColor.Gray;break;
-                case "obstacle":Console.ForegroundColor = ConsoleColor.Yellow;break;
+                case "food": Console.ForegroundColor = ConsoleColor.Cyan; break;
+                case "head": Console.ForegroundColor = ConsoleColor.DarkGray; break;
+                case "tail": Console.ForegroundColor = ConsoleColor.Gray; break;
+                case "obstacle": Console.ForegroundColor = ConsoleColor.Yellow; break;
             }
             Console.Write(symbol);
-        }       
+        }
     }
 }
