@@ -39,8 +39,8 @@ namespace Snake
             Console.BufferHeight = Console.WindowHeight;
             int startTime = Environment.TickCount;
 
-            List<Position> obstacles = new List<Position>();
             Queue<Position> snakeElements = new Queue<Position>();
+            List<Position> obstacles = new List<Position>();
             Position food = CreateApple(snakeElements, obstacles);
 
             for (int number = 1; number <= 20; number++)
@@ -53,7 +53,6 @@ namespace Snake
             {
                 WriteSymbol(obstacle, 'X', "obstacle");
             }
-
 
             for (int i = 0; i <= 5; i++)
             {
@@ -122,10 +121,22 @@ namespace Snake
                 // draw head
                 Console.SetCursorPosition(snakeNewHead.Col, snakeNewHead.Row);
                 Console.ForegroundColor = ConsoleColor.Blue;
-                if (direction == right) WriteSymbol(snakeNewHead, '>', "head");
-                if (direction == left) WriteSymbol(snakeNewHead, '<', "head");
-                if (direction == down) WriteSymbol(snakeNewHead, 'v', "head");
-                if (direction == top) WriteSymbol(snakeNewHead, '^', "head");
+                if (direction == right)
+                {
+                    WriteSymbol(snakeNewHead, '>', "head");
+                }
+                if (direction == left)
+                {
+                    WriteSymbol(snakeNewHead, '<', "head");
+                }
+                if (direction == down)
+                {
+                    WriteSymbol(snakeNewHead, 'v', "head");
+                }
+                if (direction == top)
+                {
+                    WriteSymbol(snakeNewHead, '^', "head");
+                }
 
                 // check if food is eaten
                 if (snakeNewHead.Col == food.Col && snakeNewHead.Row == food.Row)
