@@ -5,5 +5,4 @@ The logic of the game is simple, when you press and key arrow, the snake will st
 Your task is to eat the apple and prevent to be hit by an obstacle. When you meet the console end, you will
 sent to the oposite side of the console.
 
-![GitHub Logo](https://i.imgur.com/LBBGH7J.png)
-Format: ![Alt Text](url)
+![Snake Game](https://i.imgur.com/LBBGH7J.png)
